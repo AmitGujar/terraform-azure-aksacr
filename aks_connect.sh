@@ -15,7 +15,6 @@ get_values() {
     resource_group_name=$(terraform output -raw resource_group)
 
     echo "Getting credentials....."
-    sleep 3
     az aks get-credentials --resource-group $resource_group_name --name $aks_cluster_name
 }
 get_values
