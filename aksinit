@@ -30,12 +30,11 @@ validate_tfinstall() {
 }
 validate_tfinstall
 
-
 terraform_init() {
     echo "Running Terraform init"
     {
         terraform init &>/dev/null
-    } 
+    }
 }
 terraform_init
 
@@ -58,10 +57,7 @@ terraform_apply() {
     } &>/dev/null &
 
     progress_bar_movement 5
-    echo -e "\✅ Terraform apply complete."
+    echo -e "\n✅ Terraform apply complete."
 
 }
 terraform apply
-
-# merging aks config into the current shell
-source ./aks_connect.sh
