@@ -1,22 +1,13 @@
 Note - Create secret.tfvars file which contains sp details.
 
-### Initialize terraform
+### Provision Resources 
 
 ```
-terraform init -upgrade
+./aksinit
 ```
 
-### Make a plan
+### Execute file to get access of jumpbox vm.
 
 ```
-terraform plan -out main.tfplan -var-file secret.tfvars
+./vm_connect.sh
 ```
-
-### Apply changes
-
-```
-terraform apply.
-```
-
-### Execute connect.ps1 file to get access of jumpbox vm.
-
