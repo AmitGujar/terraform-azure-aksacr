@@ -1,0 +1,26 @@
+#!/bin/bash
+
+source ./progress_bar.sh
+
+STATEFILE_PATH="$HOME/github_tfaksacr"
+
+state_check() {
+    if [ -f "$STATEFILE_PATH/terraform.tfstate" ]; then
+        echo "State file found"
+    else
+        echo "State file not found"
+        exit 1
+    fi
+}
+
+destroy_aks() {
+    echo "Checking if state file exists..."
+    state_check
+    echo "Starting terraform destroy...."
+    {
+        terraform destroy --auto-approve -var-file=secret.tfvars
+    }&>/dev/null &
+    progress_bar_movement 3
+    echo -e "\n✅ Terraform destroy complete."
+}
+destroy_aks
