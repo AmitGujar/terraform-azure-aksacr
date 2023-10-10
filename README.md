@@ -11,3 +11,8 @@ Note - Create secret.tfvars file which contains sp details.
 ```
 ./vm_connect.sh
 ```
+### Execute file to clean up resources
+
+```
+./killaks
+```
