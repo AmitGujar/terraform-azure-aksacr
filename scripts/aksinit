@@ -1,6 +1,8 @@
 #!/bin/bash
 source ./progress_bar.sh
 
+cd ..
+
 validate_tfinstall() {
     if ! command -v terraform &>/dev/null; then
         echo "🤣 Using Terraform without installing terraform"

@@ -1,18 +1,17 @@
 variable "resource_name" {
-  default     = "rg-amit-001"
   type        = string
-  description = "name of resource group"
+  description = "Name of resource group"
 }
 
 variable "location" {
-  default = "centralindia"
-  type    = string
+  type        = string
+  description = "Location of resource group"
 }
 
 variable "client_id" {
-  description = "client id for aks"
+  description = "Client id of your service principal"
 }
 
 variable "client_secret" {
-  description = "client secret for aks"
+  description = "Client secret of your service principal"
 }
