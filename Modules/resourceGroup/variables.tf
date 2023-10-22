@@ -1,9 +1,7 @@
 variable "resource_name" {
-  type        = string
-  default     = "rg-amit-001"
+  type = string
 }
 
 variable "location" {
-  type        = string
-  default     = "centralindia"
+  type = string
 }
