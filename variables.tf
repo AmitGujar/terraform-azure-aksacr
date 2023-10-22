@@ -22,3 +22,15 @@ variable "acr_name" {
   type        = string
   description = "Name of the Azure Container Registry"
 }
+
+variable "cluster_name" {
+  type        = string
+  description = "Name of the AKS cluster"
+  default     = "aks-test-001"
+}
+
+variable "agent_count" {
+  type = number
+  default = 2
+  description = "Number of agent nodes for the AKS cluster"
+}
