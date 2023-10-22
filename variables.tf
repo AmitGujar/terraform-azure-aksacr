@@ -1,11 +1,13 @@
 variable "resource_name" {
   type        = string
+  default     = "rg-amit-001"
   description = "Name of resource group"
 }
 
 variable "location" {
   type        = string
   description = "Location of resource group"
+  default     = "centralindia"
 }
 
 variable "client_id" {

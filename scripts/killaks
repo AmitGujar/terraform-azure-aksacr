@@ -20,7 +20,7 @@ destroy_aks() {
     {
         terraform destroy --auto-approve -var-file=secret.tfvars
     }&>/dev/null &
-    progress_bar_movement 3
+    progress_bar_movement 5
     echo -e "\n✅ Terraform destroy complete."
 }
 destroy_aks
