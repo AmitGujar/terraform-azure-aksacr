@@ -1,6 +1,5 @@
 variable "acr_name" {
-  type        = string
-  default = "acrtestregistrydev"
+  type = string
 }
 
 variable "location" {

@@ -17,6 +17,7 @@ module "acr_test" {
   source             = "./Modules/containerRegistry"
   resource_name      = var.resource_name
   location           = var.location
+  acr_name           = var.acr_name
   virtual_network_id = data.azurerm_virtual_network.data_virtual_network.id
   subnet_id          = data.azurerm_subnet.data_links_subnet.id
   depends_on = [

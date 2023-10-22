@@ -15,3 +15,8 @@ variable "client_id" {
 variable "client_secret" {
   description = "Client secret of your service principal"
 }
+
+variable "acr_name" {
+  type        = string
+  description = "Name of the Azure Container Registry"
+}
