@@ -7,11 +7,11 @@ variable "location" {
 }
 
 variable "agent_count" {
-  default = 2
+  type = number
 }
 
 variable "cluster_name" {
-  default = "aks-test-001"
+  type = string
 }
 
 variable "dns_prefix" {

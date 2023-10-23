@@ -1,11 +1,13 @@
 variable "resource_name" {
   type        = string
+  default     = "rg-amit-001"
   description = "Name of resource group"
 }
 
 variable "location" {
   type        = string
   description = "Location of resource group"
+  default     = "centralindia"
 }
 
 variable "client_id" {
@@ -19,4 +21,16 @@ variable "client_secret" {
 variable "acr_name" {
   type        = string
   description = "Name of the Azure Container Registry"
+}
+
+variable "cluster_name" {
+  type        = string
+  description = "Name of the AKS cluster"
+  default     = "aks-test-001"
+}
+
+variable "agent_count" {
+  type = number
+  default = 2
+  description = "Number of agent nodes for the AKS cluster"
 }
