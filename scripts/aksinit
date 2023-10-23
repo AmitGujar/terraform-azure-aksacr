@@ -1,5 +1,5 @@
 #!/bin/bash
-source ./progress_bar.sh
+source $HOME/terraform-azure-aksacr/scripts/progress_bar.sh
 
 cd ..
 
