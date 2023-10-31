@@ -92,8 +92,8 @@ jobs:
         run: |
           echo "client_id = \"${{ secrets.CLIENT_ID }}\"" >> terraform.tfvars
           echo "client_secret = \"${{ secrets.CLIENT_SECRET }}\"" >> terraform.tfvars
-          echo "ssh_publickey = \"$SSH_PUBLICKEY\"" >> terraform.tfvars
-          echo "acr_name = \"$ACR_NAME\"" >> terraform.tfvars
+          echo "ssh_publickey = $SSH_PUBLICKEY" >> terraform.tfvars
+          echo "acr_name = $ACR_NAME" >> terraform.tfvars
           echo "$ACR_NAME" 
 
       # # Generates an execution plan for Terraform
