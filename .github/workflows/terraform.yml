@@ -94,7 +94,6 @@ jobs:
           echo "client_secret = \"${{ secrets.CLIENT_SECRET }}\"" >> terraform.tfvars
           echo "ssh_publickey = \"${{ vars.SSH_PUBLICKEY }}\"" >> terraform.tfvars
           echo "acr_name = \"${{ vars.ACR_NAME }}\"" >> terraform.tfvars
-          echo "$ACR_NAME" 
 
       # # Generates an execution plan for Terraform
       - name: Terraform Plan
