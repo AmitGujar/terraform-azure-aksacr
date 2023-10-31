@@ -1,13 +1,6 @@
 terraform {
   required_version = ">= 1.0"
 
-  backend "remote" {
-    organization = "amithero3342"
-    workspaces {
-      name = "terraform-azure-aksacr"
-    }
-  }
-
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
