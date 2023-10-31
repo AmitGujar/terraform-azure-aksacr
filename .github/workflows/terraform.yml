@@ -1,0 +1,63 @@
+name: "Terraform"
+ 
+# Due to the 409 conflict error, Terraform Cloud has been disabled. This script is meant for 
+# testing tf locally only
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  terraform:
+    name: "Terraform"
+    runs-on: ubuntu-latest
+    environment: production
+
+    env:
+      ARM_CLIENT_ID: ${{ secrets.CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ vars.SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.TENANT_ID }}
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+
+      # - name: Setup Terraform
+      #   uses: hashicorp/setup-terraform@v1
+      #   with:
+      #     cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Terraform Init
+        run: terraform init
+
+      # Checks that all Terraform configuration files adhere to a canonical format
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Setup Terraform variables
+        run: |
+          echo "client_id = \"${{ secrets.CLIENT_ID }}\"" >> terraform.tfvars
+          echo "client_secret = \"${{ secrets.CLIENT_SECRET }}\"" >> terraform.tfvars
+          echo "ssh_publickey = \"${{ vars.SSH_PUBLICKEY }}\"" >> terraform.tfvars
+          echo "acr_name = \"${{ vars.ACR_NAME }}\"" >> terraform.tfvars
+
+      - name: Terraform Plan
+        run: terraform plan -lock=false -input=false -var-file=terraform.tfvars -out=main.tfplan
+    #   # On push to "main", build or change infrastructure according to Terraform configuration files
+    #   # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
+      - name: Terraform Apply
+        # if: github.ref == 'refs/heads/"main"' && github.event_name == 'push'
+        run: terraform apply main.tfplan
+
+      - name: Terraform destroy
+        run: terraform destroy -auto-approve -var-file=terraform.tfvars
