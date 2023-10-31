@@ -30,7 +30,12 @@ variable "cluster_name" {
 }
 
 variable "agent_count" {
-  type = number
-  default = 2
+  type        = number
+  default     = 2
   description = "Number of agent nodes for the AKS cluster"
+}
+
+variable "ssh_publickey" {
+  type        = string
+  description = "SSH public key to use for the cluster"
 }

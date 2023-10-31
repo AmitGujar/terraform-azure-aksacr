@@ -17,7 +17,8 @@ resource "azurerm_kubernetes_cluster" "aks_test" {
   linux_profile {
     admin_username = "amitgujar"
     ssh_key {
-      key_data = file("~/.ssh/id_rsa.pub")
+      # key_data = file("~/.ssh/id_rsa.pub")
+      key_data = var.ssh_publickey
     }
   }
 
