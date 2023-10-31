@@ -82,15 +82,16 @@ jobs:
       - name: Terraform Format
         run: terraform validate
 
+      - name: Setup Terraform variables
+        run: |
+          echo "client_id = \"${{ secrets.CLIENT_ID }}\"" >> terraform.tfvars
+          echo "client_secret = \"${{ secrets.CLIENT_SECRET }}\"" >> terraform.tfvars
+          echo "ssh_publickey = \"${{ secrets.SSH_PUBLICKEY }}\"" >> terraform.tfvars
+          echo "acr_name = \"${{ secrets.ACR_NAME }}\"" >> terraform.tfvars
+
       # # Generates an execution plan for Terraform
       - name: Terraform Plan
-        run: terraform plan -lock=false -input=false
-        env:
-          client_id: "${{ secrets.CLIENT_ID }}"
-          client_secret: "${{ secrets.CLIENT_SECRET }}"
-          ssh_publickey: "${{ secrets.SSH_PUBLICKEY }}"
-          acr_name: "${{ secrets.ACR_NAME }}"
-
+        run: terraform plan -lock=false -input=false -var-file=terraform.tfvars
     #   # On push to "main", build or change infrastructure according to Terraform configuration files
     #   # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
     # - name: Terraform Apply
