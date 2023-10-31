@@ -1,5 +1,5 @@
 #!/bin/bash
-cd $HOME/terraform-azure-aksacr
+cd $HOME/terraform-azure-aksacr || exit 1
 
 resource_group=$(terraform output -raw resource_group)
 cluster_name=$(terraform output -raw aks_name)
