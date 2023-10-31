@@ -40,5 +40,8 @@ terraform_apply() {
     progress_bar_movement 5
     echo -e "\n✅ Terraform apply complete."
 
+    echo "Execute the aks_connect.sh to connect"
+
 }
 terraform_apply
+

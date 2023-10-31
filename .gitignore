@@ -38,3 +38,5 @@ id_rsa
 
 # Ignoring plan files
 *.tfplan
+
+**/alert.sh

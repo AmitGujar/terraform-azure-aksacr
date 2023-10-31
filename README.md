@@ -15,6 +15,13 @@ Optional Values:
 ./aksinit
 ```
 
+### Connect to the cluster
+
+```
+cd scripts/
+./aks_connect.sh
+```
+
 ### Execute file to get access of jumpbox vm.
 
 ```

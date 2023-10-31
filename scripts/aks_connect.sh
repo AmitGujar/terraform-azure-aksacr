@@ -1,8 +1,10 @@
 #!/bin/bash
 
-cd ..
+source ./alert.sh
 
-aks_cluster_name=$(terraform output -raw aks_test)
+cd /home/amit/terraform-azure-aksacr || exit 1
+
+aks_cluster_name=$(terraform output -raw aks_name)
 resource_group_name=$(terraform output -raw resource_group)
 
 remove_config() {
@@ -13,28 +15,53 @@ remove_config() {
         echo "No config file found"
     fi
 }
-remove_config
 
 get_values() {
-    acr_name=$(terraform output -raw acr_test)
+    remove_config
     echo "Getting credentials....."
-    az aks get-credentials --resource-group $resource_group_name --name $aks_cluster_name
+    az aks get-credentials --resource-group "$resource_group_name" --name "$aks_cluster_name"
+    # local acr_name=$(terraform output -raw acr_name)
     #    echo "Attaching ACR to the cluster....."
-    #   az aks update -n $aks_cluster_name -g $resource_group_name --attach-acr $acr_name
+    #   az aks update -n "$aks_cluster_name" -g "$resource_group_name" --attach-acr $acr_name
 }
-get_values
 
 aks_connect() {
-    kubectl get nodes &>/dev/null
-    if [ $? -ne 0 ]; then
-        echo "Starting your aks cluster...."
-        az aks start -n $aks_cluster_name -g $resource_group_name &>/dev/null
-        if [ $? -ne 0 ]; then 
-            echo "Cluster is in Starting or Running State"
-        else
-            get_values
-        fi
+    local status=$(az aks show -g "$resource_group_name" -n "$aks_cluster_name" --query "powerState.code" -o tsv)
+
+    if [ "$status" == "Running" ]; then
+        get_values
     else
-        echo "Cluster is already running...."
+        echo "Starting your aks cluster"
+        az aks start -g "$resource_group_name" -n "$aks_cluster_name"
+        get_values
+        send_alert "Cluster is UP ✅"
     fi
 }
+
+aks_control() {
+    case $1 in
+    "R")
+        echo "Stopping your aks cluster"
+        az aks stop -g "$resource_group_name" -n "$aks_cluster_name"
+
+        send_alert "Cluster is stopped ❌"
+        exit 0
+        ;;
+    "S")
+        aks_connect
+        exit 0
+        ;;
+    *)
+        echo "provide values in R (Running) & S (Stopped) only "
+        ;;
+    esac
+}
+
+determine_job() {
+    if [ -z "$1" ]; then
+        aks_connect
+    else
+        aks_control "$1"
+    fi
+}
+determine_job "$1"

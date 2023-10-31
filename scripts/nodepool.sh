@@ -1,5 +1,8 @@
+#!/bin/bash
+cd $HOME/terraform-azure-aksacr
+
 resource_group=$(terraform output -raw resource_group)
-cluster_name=$(terraform output -raw aks_test)
+cluster_name=$(terraform output -raw aks_name)
 
 read -p "How many nodepool you need = " count
 
@@ -10,7 +13,7 @@ add_nodepool() {
 		--cluster-name $cluster_name \
 		-n custompool \
 		--node-count $count \
-		--os-sku Ubuntu
+		--os-sku Ubuntu &
 	if [ $? -ne 0 ]; then
 		echo "Failed to add node pool"
 	else
