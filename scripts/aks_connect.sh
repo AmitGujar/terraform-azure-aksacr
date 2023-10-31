@@ -26,7 +26,8 @@ get_values() {
 }
 
 aks_connect() {
-    local status=$(az aks show -g "$resource_group_name" -n "$aks_cluster_name" --query "powerState.code" -o tsv)
+    local status
+    status=$(az aks show -g "$resource_group_name" -n "$aks_cluster_name" --query "powerState.code" -o tsv)
 
     if [ "$status" == "Running" ]; then
         get_values
