@@ -7,14 +7,23 @@ cd /home/amit/terraform-azure-aksacr || exit 1
 aks_cluster_name=$(terraform output -raw aks_name)
 resource_group_name=$(terraform output -raw resource_group)
 
-
+# appending tag to the rg
 tag_addition() {
     echo "Appending tag to your node group..."
     resource_id=$(az group show -g "$resource_group_name-node-group" --query "id" -o tsv)
     az tag create --resource-id "$resource_id" --tags Exp=5
 }
-tag_addition
 
+# checking if the tag exists for the rg
+check_tag() {
+    check_tag=$(az group show -g "$resource_group_name-node-group" --query "tags" -o tsv)
+
+    if [ -z "$check_tag" ]; then
+        tag_addition
+    else
+        echo "This group already consists tag."
+    fi
+}
 
 # removing existing config file
 remove_config() {
@@ -38,11 +47,13 @@ get_values() {
 
 # connecting to the aks cluster based on it's state
 aks_connect() {
+    check_tag
     local status
     status=$(az aks show -g "$resource_group_name" -n "$aks_cluster_name" --query "powerState.code" -o tsv)
 
     if [ "$status" == "Running" ]; then
         echo "Cluster is already running"
+        get_values
     else
         echo "Starting your aks cluster"
         az aks start -g "$resource_group_name" -n "$aks_cluster_name"
