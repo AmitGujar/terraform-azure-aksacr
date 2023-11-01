@@ -7,6 +7,15 @@ cd /home/amit/terraform-azure-aksacr || exit 1
 aks_cluster_name=$(terraform output -raw aks_name)
 resource_group_name=$(terraform output -raw resource_group)
 
+
+tag_addition() {
+    echo "Appending tag to your node group..."
+    resource_id=$(az group show -g "$resource_group_name-node-group" --query "id" -o tsv)
+    az tag create --resource-id "$resource_id" --tags Exp=5
+}
+tag_addition
+
+
 # removing existing config file
 remove_config() {
     if [ -f ~/.kube/config ]; then
