@@ -1,6 +1,8 @@
 #!/bin/bash
 source $HOME/terraform-azure-aksacr/scripts/progress_bar.sh
 
+source ./alert.sh
+
 cd ..
 
 validate_tfinstall() {
@@ -23,7 +25,7 @@ terraform_plan() {
     echo "Running Terraform Plan"
     {
         terraform plan -out main.tfplan -var-file secret.tfvars
-    } &>/dev/null &
+    } >/dev/null &
 
     progress_bar_movement 1
 
@@ -35,13 +37,12 @@ terraform_apply() {
     echo "Running Terraform apply..."
     {
         terraform apply main.tfplan
-    } &>/dev/null &
+    } >/dev/null &
 
     progress_bar_movement 5
     echo -e "\n✅ Terraform apply complete."
-
+    send_alert "AKS Cluster is created 🎉"
     echo "Execute the aks_connect.sh to connect"
 
 }
 terraform_apply
-
