@@ -12,7 +12,7 @@ tag_addition() {
     echo "Appending tag to your node group..."
     resource_id=$(az group show -g "$resource_group_name-node-group" --query "id" -o tsv)
     az tag create --resource-id "$resource_id" --tags Exp=5
-    
+
 }
 
 # checking if the tag exists for the rg
@@ -22,7 +22,7 @@ check_tag() {
     if [ -z "$check_tag" ]; then
         tag_addition
     else
-        echo "This group already consists tag."
+        echo "Exp tag exists"
     fi
 }
 
@@ -44,7 +44,7 @@ get_values() {
     local acr_name
     acr_name=$(terraform output -raw acr_name)
     echo "Attaching ACR to the cluster....."
-    # az aks update -n "$aks_cluster_name" -g "$resource_group_name" --attach-acr "$acr_name" || true  
+    az aks update -n "$aks_cluster_name" -g "$resource_group_name" --attach-acr "$acr_name" || true
 }
 
 # connecting to the aks cluster based on it's state
