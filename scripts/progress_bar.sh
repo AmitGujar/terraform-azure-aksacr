@@ -8,14 +8,14 @@ progress_bar() {
 }
 
 progress_bar_movement() {
-    while true; do
-        if ! ps -p $! &>/dev/null; then
-            break
+    group_pid=$!
+    progress=1
+    while kill -0 $group_pid 2>/dev/null; do
+        progress_bar $progress
+        sleep $1
+        if ((progress < 100)); then
+            ((progress++))
         fi
-        for i in {1..100}; do
-            progress_bar $((i * 1))
-            sleep $1
-        done
     done
     progress_bar 100
 }
