@@ -2,7 +2,7 @@
 
 source ./alert.sh
 
-cd /home/amit/terraform-azure-aksacr || exit 1
+cd /home/amitdg/Desktop/terraform-azure-aksacr || exit 1
 
 aks_cluster_name=$(terraform output -raw aks_name)
 resource_group_name=$(terraform output -raw resource_group)
@@ -43,13 +43,13 @@ get_values() {
     az aks get-credentials --resource-group "$resource_group_name" --name "$aks_cluster_name"
     local acr_name
     acr_name=$(terraform output -raw acr_name)
-    echo "Attaching ACR to the cluster....."
-    az aks update -n "$aks_cluster_name" -g "$resource_group_name" --attach-acr "$acr_name" || true
+    # echo "Attaching ACR to the cluster....."
+    # az aks update -n "$aks_cluster_name" -g "$resource_group_name" --attach-acr "$acr_name" || true
 }
 
 # connecting to the aks cluster based on it's state
 aks_connect() {
-    check_tag
+    # check_tag
     local status
     status=$(az aks show -g "$resource_group_name" -n "$aks_cluster_name" --query "powerState.code" -o tsv)
 

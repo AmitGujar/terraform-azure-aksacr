@@ -1,5 +1,5 @@
 #!/bin/bash
-source $HOME/terraform-azure-aksacr/scripts/progress_bar.sh
+source $HOME/Desktop/terraform-azure-aksacr/scripts/progress_bar.sh || exit 1
 
 source ./alert.sh
 
@@ -16,7 +16,7 @@ validate_tfinstall
 terraform_init() {
     echo "Running Terraform init"
     {
-        terraform init &>/dev/null
+        terraform init --upgrade &>/dev/null
     }
 }
 terraform_init
