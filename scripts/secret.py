@@ -1,4 +1,5 @@
 from kubernetes import client, config
+from kubernetes.client import ApiException
 import os
 import json
 
@@ -14,6 +15,17 @@ storageKey = get_terraform_output("storage_account_key", "..")
 
 print(storageName)
 print(storageKey)
+
+# creating namespace
+def create_ns(namespace):
+    config.load_kube_config()
+    v1 = client.CoreV1Api()
+    body = client.V1Namespace(metadata=client.V1ObjectMeta(name=namespace))
+    try:
+        v1.create_namespace(body=body)
+        print(f"{namespace} namespace created!")
+    except ApiException as e:
+        raise Exception("Failed to create namespace: {}".format(e))
 
 
 def create_secret(namespace, name, storagekey):
@@ -34,8 +46,6 @@ def create_secret(namespace, name, storagekey):
         raise Exception("Failed to create a secret: {}".format(e))
 
 # getting created secrets
-create_secret("elastic-deployment", storageName, storageKey)
-
 def get_secrets(namespace):
 
     config.load_kube_config()
@@ -50,4 +60,8 @@ def get_secrets(namespace):
     except ApiException as e:
         raise Exception("Failed to get secrets: {}".format(e))
 
-get_secrets("elastic-deployment")
+
+namespace = "elastic-deployment" #name of namespace
+create_ns(namespace)
+create_secret(namespace, storageName, storageKey)
+get_secrets(namespace)
