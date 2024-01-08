@@ -2,6 +2,16 @@
 
 source ./alert.sh
 
+read -p "Do you want to create a secret = " choice
+
+check_choice() {
+    if [ "$choice" == "y" ]; then
+        python3 scripts/secret.py
+    else
+        echo "Nothing to do here...."
+    fi
+}
+
 cd /home/amitdg/Desktop/terraform-azure-aksacr || exit 1
 
 aks_cluster_name=$(terraform output -raw aks_name)

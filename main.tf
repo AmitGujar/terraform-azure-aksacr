@@ -25,6 +25,15 @@ module "acr_test" {
   ]
 }
 
+module "storage_account" {
+  source        = "./Modules/storage"
+  resource_name = var.resource_name
+  location      = var.location
+  depends_on = [
+    module.resource_group
+  ]
+}
+
 module "aks_test" {
   source        = "./Modules/aks"
   resource_name = var.resource_name
