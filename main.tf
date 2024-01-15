@@ -1,42 +1,47 @@
-module "resource_group" {
-  source        = "./Modules/resourceGroup"
-  resource_name = var.resource_name
-  location      = var.location
-}
+# module "resource_group" {
+#   source        = "./Modules/resourceGroup"
+#   # resource_name = var.resource_name
+#   resource_name = data.azurerm_resource_group.existing.name
+#   location      = var.location
+# }
 
 module "virtual_network" {
   source        = "./Modules/virtualNetwork"
-  resource_name = var.resource_name
+  # resource_name = var.resource_name
+  resource_name = data.azurerm_resource_group.existing.name
   location      = var.location
-  depends_on = [
-    module.resource_group
-  ]
+  # depends_on = [
+  #   module.resource_group
+  # ]
 }
 
 module "acr_test" {
   source             = "./Modules/containerRegistry"
-  resource_name      = var.resource_name
+  # resource_name      = var.resource_name
+  resource_name = data.azurerm_resource_group.existing.name
   location           = var.location
   acr_name           = var.acr_name
   virtual_network_id = data.azurerm_virtual_network.data_virtual_network.id
   subnet_id          = data.azurerm_subnet.data_links_subnet.id
-  depends_on = [
-    module.resource_group
-  ]
+  # depends_on = [
+  #   module.resource_group
+  # ]
 }
 
 module "storage_account" {
   source        = "./Modules/storage"
-  resource_name = var.resource_name
+  # resource_name = var.resource_name
+  resource_name = data.azurerm_resource_group.existing.name
   location      = var.location
-  depends_on = [
-    module.resource_group
-  ]
+  # depends_on = [
+  #   module.resource_group
+  # ]
 }
 
 module "aks_test" {
   source        = "./Modules/aks"
-  resource_name = var.resource_name
+  # resource_name = var.resource_name
+  resource_name = data.azurerm_resource_group.existing.name
   location      = var.location
   cluster_name  = var.cluster_name
   agent_count   = var.agent_count
@@ -45,6 +50,7 @@ module "aks_test" {
   client_secret = var.client_secret
   depends_on    = [module.acr_test]
   ssh_publickey = var.ssh_publickey
+  principal_id  = var.principal_id
 }
 
 
