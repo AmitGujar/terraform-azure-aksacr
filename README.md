@@ -1,3 +1,6 @@
+### Note - (for me 😂)
+Switch to dev branch if you want to deploy changes on dev workspace of terraform.
+
 ### Create secret.tfvars file which contains following details.
 Required Values: 
 - client_id - { client id of service principle }
