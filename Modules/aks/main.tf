@@ -8,7 +8,7 @@ resource "azurerm_kubernetes_cluster" "aks_test" {
 
   default_node_pool {
     name            = "workernode"
-    vm_size         = "Standard_D2_V2"
+    vm_size         = "Standard_D2as_v4"
     node_count      = var.agent_count
     vnet_subnet_id  = var.aks_subnet_id
     os_disk_size_gb = 30
