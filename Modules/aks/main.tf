@@ -7,8 +7,9 @@ resource "azurerm_kubernetes_cluster" "aks_test" {
 
 
   default_node_pool {
-    name            = "workernode"
-    vm_size         = "Standard_D2as_v4"
+    name = "workernode"
+    # vm_size         = "Standard_D2as_v4"
+    vm_size         = "Standard_DS2_v2" # perfect for dev-test environment
     node_count      = var.agent_count
     vnet_subnet_id  = var.aks_subnet_id
     os_disk_size_gb = 30
@@ -33,4 +34,24 @@ resource "azurerm_kubernetes_cluster" "aks_test" {
     client_id     = var.client_id
     client_secret = var.client_secret
   }
+
+  kubernetes_version = "1.28.3"
+
+  # this configuration enables the Azure AD integration with AKS
+  local_account_disabled            = true
+  role_based_access_control_enabled = true
+
+  azure_active_directory_role_based_access_control {
+    managed = true
+    admin_group_object_ids = [
+      var.principal_id
+    ]
+    azure_rbac_enabled = true
+  }
+}
+
+resource "azurerm_role_assignment" "aks_cluster_admin" {
+  scope                = azurerm_kubernetes_cluster.aks_test.id
+  role_definition_name = var.role_definition_name
+  principal_id         = var.principal_id
 }

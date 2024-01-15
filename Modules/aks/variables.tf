@@ -35,3 +35,11 @@ variable "client_secret" {
   description = "value of client secret for aks"
 }
 
+variable "principal_id" {
+  description = "principle id of user"
+}
+
+variable "role_definition_name" {
+  description = "role definition name"
+  default     = "Azure Kubernetes Service RBAC Admin"
+}
