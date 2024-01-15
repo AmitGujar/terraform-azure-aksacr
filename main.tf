@@ -45,6 +45,7 @@ module "aks_test" {
   client_secret = var.client_secret
   depends_on    = [module.acr_test]
   ssh_publickey = var.ssh_publickey
+  principal_id = var.principal_id
 }
 
 
