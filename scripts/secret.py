@@ -22,10 +22,15 @@ def create_ns(namespace):
     v1 = client.CoreV1Api()
     body = client.V1Namespace(metadata=client.V1ObjectMeta(name=namespace))
     try:
-        v1.create_namespace(body=body)
-        print(f"{namespace} namespace created!")
+        v1.read_namespace(name=namespace)
+        print(f"{namespace} namespace exists!")
     except ApiException as e:
-        raise Exception("Failed to create namespace: {}".format(e))
+        if e.status == 404:
+            body = client.V1Namespace(metadata=client.V1ObjectMeta(name=namespace))
+            v1.create_namespace(body=body)
+            print(f"{namespace} namespace created!")
+        else:
+            raise Exception("Failed to create a secret: {}".format(e))
 
 
 def create_secret(namespace, name, storagekey):
@@ -35,7 +40,7 @@ def create_secret(namespace, name, storagekey):
     # Create a V1Secret object
     secret = client.V1Secret()
     secret.metadata = client.V1ObjectMeta(name=name) # storage account name will be secret name
-    secret.string_data = {"storage_account_key": storagekey}  
+    secret.string_data = {"accountname": name, "accountkey": storagekey}  
 
     # Creating the secret
     v1 = client.CoreV1Api()
@@ -44,6 +49,7 @@ def create_secret(namespace, name, storagekey):
         print("Secret created!")
     except ApiException as e:
         raise Exception("Failed to create a secret: {}".format(e))
+            
 
 # getting created secrets
 def get_secrets(namespace):
