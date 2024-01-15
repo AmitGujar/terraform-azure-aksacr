@@ -7,7 +7,6 @@ data "azurerm_virtual_network" "data_virtual_network" {
   ]
 }
 
-
 data "azurerm_subnet" "data_cluster_subnet" {
   name                 = module.virtual_network.cluster_subnet.name
   virtual_network_name = module.virtual_network.virtual_network
@@ -50,5 +49,6 @@ data "azurerm_public_ip" "data_jumpbox_public_ip" {
 # using existing resowurce group
 
 data "azurerm_resource_group" "existing" {
-  name = "rg-terraform-001"
+  # name of already existing resource group
+  name = "rg-amit-tfmanaged-001"
 }

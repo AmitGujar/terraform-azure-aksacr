@@ -41,5 +41,5 @@ variable "principal_id" {
 
 variable "role_definition_name" {
   description = "role definition name"
-  default     = "Azure Kubernetes Service RBAC Admin"
+  default     = "Azure Kubernetes Service RBAC Cluster Admin"
 }
