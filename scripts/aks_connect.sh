@@ -72,6 +72,7 @@ aks_connect() {
         get_values
         send_alert "Cluster is UP ✅"
     fi
+    check_choice
 }
 
 aks_control() {
