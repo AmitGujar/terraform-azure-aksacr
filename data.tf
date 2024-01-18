@@ -37,14 +37,14 @@ data "azurerm_subnet" "data_jumpbox_subnet" {
   ]
 }
 
-data "azurerm_public_ip" "data_jumpbox_public_ip" {
-  name = module.virtual_network.jumpbox_public_ip.name
-  # resource_group_name = module.resource_group.resource_name
-  resource_group_name = data.azurerm_resource_group.existing.name
-  depends_on = [
-    module.virtual_network
-  ]
-}
+# data "azurerm_public_ip" "data_jumpbox_public_ip" {
+#   name = module.virtual_network.jumpbox_public_ip.name
+#   # resource_group_name = module.resource_group.resource_name
+#   resource_group_name = data.azurerm_resource_group.existing.name
+#   depends_on = [
+#     module.virtual_network
+#   ]
+# }
 
 # using existing resowurce group
 
