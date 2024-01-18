@@ -7,5 +7,5 @@ variable "location" {
 }
 
 variable "share_name" {
-  default = "custom"
+  default = "akshare"
 }
