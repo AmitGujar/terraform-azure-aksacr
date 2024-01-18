@@ -30,7 +30,7 @@ variable "acr_name" {
 variable "cluster_name" {
   type        = string
   description = "Name of the AKS cluster"
-  default     = "aks-test-001"
+  default     = "aks-cdp-001"
 }
 
 variable "agent_count" {

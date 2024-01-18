@@ -50,5 +50,5 @@ data "azurerm_public_ip" "data_jumpbox_public_ip" {
 
 data "azurerm_resource_group" "existing" {
   # name of already existing resource group
-  name = "rg-amit-tfmanaged-001"
+  name = "CDPsolution_RG"
 }

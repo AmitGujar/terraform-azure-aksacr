@@ -15,7 +15,7 @@ variable "cluster_name" {
 }
 
 variable "dns_prefix" {
-  default = "dns-aks-clmigration-001"
+  default = "dns-aks-cdp-001"
 }
 
 variable "aks_subnet_id" {

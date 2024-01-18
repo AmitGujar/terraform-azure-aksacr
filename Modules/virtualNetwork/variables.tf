@@ -8,7 +8,7 @@ variable "location" {
 
 variable "vnet_name" {
   type = string
-  default = "vnet-terraform-test-001"
+  default = "vnet-cdp-001"
 }
 
 variable "vnet_address_space" {
@@ -18,7 +18,7 @@ variable "vnet_address_space" {
 
 variable "cluster_subnet_name" {
   type = string
-  default = "snet-aks-terraform-001"
+  default = "snet-aks-cdp-001"
 }
 
 variable "cluster_subnet_address_prefix" {
@@ -28,7 +28,7 @@ variable "cluster_subnet_address_prefix" {
 
 variable "links_subnet_name" {
   type = string
-  default = "snet-links-terraform-002"
+  default = "snet-links-cdp-002"
 }
 
 variable "links_subnet_address_prefix" {
@@ -38,7 +38,7 @@ variable "links_subnet_address_prefix" {
 
 variable "jumpbox_subnet_name" {
   type = string
-  default = "snet-jump-terraform-003"
+  default = "snet-jump-cdp-003"
 }
 
 variable "jumpbox_subnet_address_prefix" {

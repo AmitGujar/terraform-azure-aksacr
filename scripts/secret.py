@@ -10,8 +10,14 @@ def get_terraform_output(output_var, directory="."):
     return output_json[output_var]['value']
 
 # get output from terraform variables
-storageName = get_terraform_output("storage_account_name", "..")
-storageKey = get_terraform_output("storage_account_key", "..")
+# storageName = get_terraform_output("storage_account_name", "..")
+# storageKey = get_terraform_output("storage_account_key", "..")
+
+
+# ! these are the details for client environment only
+
+storageName = ""
+storageKey = ""
 
 print(storageName)
 print(storageKey)

@@ -28,15 +28,15 @@ module "acr_test" {
   # ]
 }
 
-module "storage_account" {
-  source        = "./Modules/storage"
+# module "storage_account" {
+#   source        = "./Modules/storage"
   # resource_name = var.resource_name
-  resource_name = data.azurerm_resource_group.existing.name
-  location      = var.location
+  # resource_name = data.azurerm_resource_group.existing.name
+  # location      = var.location
   # depends_on = [
   #   module.resource_group
   # ]
-}
+# }
 
 module "aks_test" {
   source        = "./Modules/aks"

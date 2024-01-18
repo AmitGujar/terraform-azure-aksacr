@@ -1,8 +1,10 @@
 #!/bin/bash
 cd $HOME/Desktop/terraform-azure-aksacr || exit 1
 
-resource_group=$(terraform output -raw resource_group)
-cluster_name=$(terraform output -raw aks_name)
+# resource_group=$(terraform output -raw resource_group)
+# cluster_name=$(terraform output -raw aks_name)
+resource_group="CDPsolution_RG"
+cluster_name="aks-cdp-001"
 
 read -p "How many nodepool you need = " count
 read -p "Enter the name of the nodepool = " nodepool
