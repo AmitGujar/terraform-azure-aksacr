@@ -8,6 +8,7 @@ cluster_name="aks-cdp-001"
 
 read -p "How many nodepool you need = " count
 read -p "Enter the name of the nodepool = " nodepool
+read -p "What is the vm size = " vmsize
 
 add_nodepool() {
 	echo "Adding another node pool in your cluster"
@@ -15,6 +16,7 @@ add_nodepool() {
 		-g $resource_group \
 		--cluster-name $cluster_name \
 		-n $nodepool \
+		--node-vm-size $vmsize \
 		--node-count $count \
 		--os-sku Ubuntu
 	if [ $? -ne 0 ]; then

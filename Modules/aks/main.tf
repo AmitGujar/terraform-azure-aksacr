@@ -35,7 +35,7 @@ resource "azurerm_kubernetes_cluster" "aks_test" {
     client_secret = var.client_secret
   }
 
-  # kubernetes_version = "1.28.3"
+  kubernetes_version = "1.28.3"
 
   # # this configuration enables the Azure AD integration with AKS
   local_account_disabled            = true
@@ -47,6 +47,9 @@ resource "azurerm_kubernetes_cluster" "aks_test" {
       var.principal_id
     ]
     azure_rbac_enabled = true
+  }
+    lifecycle {
+    ignore_changes = all
   }
 }
 
@@ -65,4 +68,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "kubernetes_cluster_node_pool" {
   enable_auto_scaling   = false
   # min_count             = "2"
   # max_count             = "3"
+  lifecycle {
+    ignore_changes = all
+  }
 }
