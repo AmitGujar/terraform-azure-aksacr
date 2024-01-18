@@ -7,12 +7,13 @@ resource "azurerm_kubernetes_cluster" "aks_test" {
 
 
   default_node_pool {
-    name = "workernode"
+    name = "systempool"
+    temporary_name_for_rotation = "systempool" # this is a workaround for a known issue in Terraform while doing changes in existing cluster
     # vm_size         = "Standard_D2as_v4"
-    vm_size         = "Standard_DS2_v2" # perfect for dev-test environment
+    vm_size         = "Standard_B2s" # perfect for dev-test environment
     node_count      = var.agent_count
     vnet_subnet_id  = var.aks_subnet_id
-    os_disk_size_gb = 30
+    os_disk_size_gb = 50
   }
 
   linux_profile {
@@ -54,4 +55,14 @@ resource "azurerm_role_assignment" "aks_cluster_admin" {
   scope                = azurerm_kubernetes_cluster.aks_test.id
   role_definition_name = var.role_definition_name
   principal_id         = var.principal_id
+}
+
+resource "azurerm_kubernetes_cluster_node_pool" "userpool" {
+  name                  = "userpool"
+  kubernetes_cluster_id = azurerm_kubernetes_cluster.aks_test.id
+  vm_size               = "Standard_D4s_v5"
+  node_count            = "2"
+  enable_auto_scaling   = true
+  min_count             = "1"
+  max_count             = "2"
 }
