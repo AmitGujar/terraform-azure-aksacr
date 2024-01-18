@@ -27,9 +27,9 @@ resource "azurerm_subnet" "jumpbox_subnet" {
   address_prefixes     = var.jumpbox_subnet_address_prefix
 }
 
-resource "azurerm_public_ip" "jumpbox_public_ip" {
-  name                = "pip-jumpbox-centralindia-001"
-  resource_group_name = var.resource_name
-  location            = var.location
-  allocation_method   = "Dynamic"
-}
+# resource "azurerm_public_ip" "jumpbox_public_ip" {
+#   name                = "pip-jumpbox-centralindia-001"
+#   resource_group_name = var.resource_name
+#   location            = var.location
+#   allocation_method   = "Dynamic"
+# }

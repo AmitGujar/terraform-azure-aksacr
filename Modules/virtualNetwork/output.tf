@@ -6,9 +6,9 @@ output "cluster_subnet" {
   value = azurerm_subnet.cluster_subnet
 }
 
-output "jumpbox_public_ip" {
-  value = azurerm_public_ip.jumpbox_public_ip
-}
+# output "jumpbox_public_ip" {
+#   value = azurerm_public_ip.jumpbox_public_ip
+# }
 
 output "links_subnet" {
   value = azurerm_subnet.links_subnet
