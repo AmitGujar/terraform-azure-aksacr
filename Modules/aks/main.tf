@@ -7,7 +7,7 @@ resource "azurerm_kubernetes_cluster" "aks_test" {
 
 
   default_node_pool {
-    name = "systempool"
+    name                        = "systempool"
     temporary_name_for_rotation = "systempool" # this is a workaround for a known issue in Terraform while doing changes in existing cluster
     # vm_size         = "Standard_D2as_v4"
     vm_size         = "Standard_B2s" # perfect for dev-test environment
@@ -61,8 +61,11 @@ resource "azurerm_kubernetes_cluster_node_pool" "userpool" {
   name                  = "userpool"
   kubernetes_cluster_id = azurerm_kubernetes_cluster.aks_test.id
   vm_size               = "Standard_D4s_v5"
-  node_count            = "2"
-  enable_auto_scaling   = true
-  min_count             = "1"
-  max_count             = "2"
+  node_count            = "1"
+  enable_auto_scaling   = false
+  lifecycle {
+    ignore_changes = all
+  }
+  # min_count             = "1"
+  # max_count             = "2"
 }

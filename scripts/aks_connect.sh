@@ -103,3 +103,8 @@ determine_job() {
     fi
 }
 determine_job "$1"
+
+az role assignment create \
+    --role "Azure Kubernetes Service RBAC Cluster Admin" \
+    --scope subscriptions/0d3ce63c-abaa-48ae-bbe1-f582cea576b9/resourceGroups/rg-amit-001/providers/Microsoft.ContainerService/managedClusters/aks-test-001/ \
+    --assignee "246cfd43-77c5-4c63-8f77-d6a19a3876ec"

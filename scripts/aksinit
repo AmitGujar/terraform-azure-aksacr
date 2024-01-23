@@ -24,7 +24,7 @@ terraform_init
 terraform_plan() {
     echo "Running Terraform Plan"
     {
-        terraform plan -out main.tfplan -var-file secret.tfvars
+        terraform plan -out main.tfplan -var-file personalenv.tfvars
     } >/dev/null &
 
     progress_bar_movement 1
