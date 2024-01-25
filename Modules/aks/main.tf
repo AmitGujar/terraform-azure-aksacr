@@ -69,3 +69,14 @@ resource "azurerm_kubernetes_cluster_node_pool" "userpool" {
   # min_count             = "1"
   # max_count             = "2"
 }
+
+# setting up the resource group level lock to prevent accidental deletion
+resource "azurerm_management_lock" "resource-group-level" {
+  name       = "do-not-touch"
+  scope      = azurerm_kubernetes_cluster.aks_test.node_resource_group_id
+  lock_level = "CanNotDelete"
+  notes      = "This resource can't be deleted"
+  depends_on = [
+    azurerm_kubernetes_cluster.aks_test
+  ]
+}
