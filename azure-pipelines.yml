@@ -1,19 +1,208 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
-- main
+  branches:
+    include:
+      - main
+      - dev
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: "ubuntu-latest"
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+variables:
+  ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/main') }}:
+    dockerRegistryServiceConnection: "ACR_Connection"
+    imageRepository: "amundsen"
+    dockerfilePath: "$(Build.SourcesDirectory)/Dockerfile"
+    tag: "prod-$(Build.BuildId)"
+    acrurl: "acrisgreatniceprod.azurecr.io"
+    deploymentFolder: "$(Build.SourcesDirectory)/manifests/base"
+    environment: "Production"
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+  ${{ if ne(variables['Build.SourceBranch'], 'refs/heads/main') }}:
+    dockerRegistryServiceConnection: "ACR_Connection"
+    imageRepository: "amundsen"
+    dockerfilePath: "$(Build.SourcesDirectory)/Dockerfile"
+    tag: "dev-$(Build.BuildId)"
+    acrurl: "acrisgreatniceprod.azurecr.io"
+    deploymentFolder: "$(Build.SourcesDirectory)/manifests/overlays/dev"
+    environment: "Development"
+
+parameters:
+  - name: ForceImagePushImageWithVulnerability
+    values:
+      - true
+      - false
+    default: false
+    displayName: Force Image Push Image With Vulnerability
+
+stages:
+  # first stage will check the power status of AKS, if it is running then it will proceed to the next stage
+  - stage: CheckAKS
+    displayName: Check Power Status
+    jobs:
+      - deployment: CheckAKS
+        environment: $(environment)
+        # job: CheckAKS
+        displayName: Check Power Status
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: AzureCLI@2
+                  name: aksCheck
+                  inputs:
+                    azureSubscription: "DevOps-006"
+                    scriptType: "bash"
+                    scriptLocation: "scriptPath"
+                    scriptPath: "scripts/aksinit.sh"
+  - stage: Build
+    displayName: Build & Test
+    dependsOn: CheckAKS
+    condition: and(succeeded(), eq(dependencies.CheckAKS.outputs['CheckAKS.aksCheck.aksRunning'], 'true'))
+    jobs:
+      - job: Build
+        displayName: Build
+        steps:
+          - template: docker-tags.yml
+            parameters:
+              branch: $(Build.SourceBranchName)
+              buildId: $(Build.BuildId)
+          - task: Docker@2
+            inputs:
+              containerRegistry: "ACR_Connection"
+              repository: $(imageRepository)
+              command: "build"
+              Dockerfile: "**/Dockerfile"
+              tags: $(tag)
+            displayName: Building image
+
+          - task: Bash@3
+            displayName: Save Docker Image as Tar
+            inputs:
+              targetType: "inline"
+              script: "docker save $(acrurl)/$(imageRepository):$(tag) -o $(Pipeline.Workspace)/$(imageRepository):$(tag).tar"
+
+          # installing trivy
+          - task: CmdLine@2
+            displayName: "Install Trivy"
+            inputs:
+              script: |
+                sudo apt-get install wget apt-transport-https gnupg lsb-release
+                wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+                echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+                sudo apt-get update
+                sudo apt-get install trivy
+
+          # scanning image with trivy
+          - task: CmdLine@2
+            displayName: "Run trivy scan"
+            inputs:
+              script: |
+                trivy image --severity HIGH, CRITICAL --format template --template "@contrib/junit.tpl" -o test.xml acrisgreatniceprod.azurecr.io/$(imageRepository):$(tag) --ignore-unfixed
+
+          # publishing the test results
+          - ${{ if eq(parameters.ForceImagePushImageWithVulnerability, 'false') }}:
+              - task: PublishTestResults@2
+                inputs:
+                  testResultsFormat: "JUnit"
+                  testResultsFiles: "**/test.xml"
+                  mergeTestResults: true
+                  failTaskOnFailedTests: true
+                  testRunTitle: "Trivy - Vulnerabilities Summary"
+          - ${{ if eq(parameters.ForceImagePushImageWithVulnerability, 'true') }}:
+              - task: PublishTestResults@2
+                inputs:
+                  testResultsFormat: "JUnit"
+                  testResultsFiles: "**/test.xml"
+                  mergeTestResults: true
+                  failTaskOnFailedTests: false
+                  testRunTitle: "Trivy - Vulnerabilities Summary"
+
+          # publishing the image as artifact
+          - task: PublishPipelineArtifact@1
+            displayName: Publish Pipeline Artifacts
+            inputs:
+              targetPath: "$(Pipeline.Workspace)/$(imageRepository):$(tag).tar"
+              artifact: "$(imageRepository)"
+              publishLocation: "pipeline"
+
+  - stage: Push
+    displayName: Pushing Image to ACR
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - job: Push
+        displayName: Push
+        steps:
+          # downloading the artifact from the previous stage
+          - task: DownloadPipelineArtifact@2
+            displayName: Download Pipeline Artifacts
+            inputs:
+              artifact: "$(imageRepository)"
+              path: "$(Pipeline.Workspace)"
+
+          # usign the downloaded artifact to load the image
+          - task: Bash@3
+            displayName: Load Docker Image from Tar
+            inputs:
+              targetType: "inline"
+              script: "docker load -i $(Pipeline.Workspace)/$(imageRepository):$(tag).tar"
+          # pushing image in ACR
+          - task: Docker@2
+            inputs:
+              containerRegistry: "ACR_Connection"
+              repository: "$(imageRepository)"
+              command: "push"
+              tags: $(tag)
+            displayName: "Pushing image to ACR"
+
+  - stage: Deploy
+    displayName: Deploying to AKS
+    dependsOn: Push
+    condition: succeeded()
+    jobs:
+      - job: deployment
+        displayName: "Updating deployment"
+        steps:
+          - script: |
+              echo "##vso[task.setvariable variable=latest]$(tag)"
+
+          # this task will match the pattern and replace the value with pipeline variable
+          - task: replacetokens@5
+            inputs:
+              rootDirectory: "$(Build.SourcesDirectory)"
+              targetFiles: "**/*.yml"
+              encoding: "auto"
+              tokenPattern: "custom"
+              tokenPrefix: "_"
+              tokenSuffix: "_"
+              writeBOM: true
+              actionOnMissing: "warn"
+              keepToken: false
+              actionOnNoFiles: "continue"
+              enableTransforms: false
+              enableRecursion: false
+              useLegacyPattern: false
+              enableTelemetry: true
+            displayName: "Updating deployment"
+
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: "DevOps-006"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                az aks install-cli
+            displayName: "Initializing deployment"
+
+          - task: Kubernetes@1
+            inputs:
+              connectionType: "Azure Resource Manager"
+              azureSubscriptionEndpoint: "DevOps-006"
+              azureResourceGroup: "rg-amit-001"
+              kubernetesCluster: "aks-test-001"
+              namespace: "cdp"
+              command: "apply"
+              arguments: "-k $(deploymentFolder)"
+              secretType: "dockerRegistry"
+              containerRegistryType: "Azure Container Registry"
+            displayName: "Deploying to AKS"

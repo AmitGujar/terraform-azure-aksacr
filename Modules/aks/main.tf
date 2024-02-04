@@ -62,12 +62,12 @@ resource "azurerm_kubernetes_cluster_node_pool" "userpool" {
   kubernetes_cluster_id = azurerm_kubernetes_cluster.aks_test.id
   vm_size               = "Standard_D4s_v5"
   node_count            = "1"
-  enable_auto_scaling   = false
+  enable_auto_scaling   = true
   lifecycle {
     ignore_changes = all
   }
-  # min_count             = "1"
-  # max_count             = "2"
+  min_count             = "1"
+  max_count             = "2"
 }
 
 # setting up the resource group level lock to prevent accidental deletion
