@@ -1,9 +1,9 @@
 #!/bin/bash
 source $HOME/Desktop/terraform-azure-aksacr/scripts/progress_bar.sh || exit 1
 
-source ./alert.sh
+source $HOME/Desktop/terraform-azure-aksacr/scripts/alert.sh || exit 1
 
-cd ..
+# cd ..
 
 validate_tfinstall() {
     if ! command -v terraform &>/dev/null; then

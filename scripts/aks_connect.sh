@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ./alert.sh
+source $HOME/Desktop/terraform-azure-aksacr/scripts/alert.sh || exit 1
 
 read -p "Do you want to create a secret = " choice
 
@@ -104,7 +104,7 @@ determine_job() {
 }
 determine_job "$1"
 
-az role assignment create \
-    --role "Azure Kubernetes Service RBAC Cluster Admin" \
-    --scope subscriptions/052c9332-2138-411f-adef-e7445d02ecc6/resourceGroups/rg-amit-001/providers/Microsoft.ContainerService/managedClusters/aks-test-001/ \
-    --assignee "246cfd43-77c5-4c63-8f77-d6a19a3876ec"
+# az role assignment create \
+#     --role "Azure Kubernetes Service RBAC Cluster Admin" \
+#     --scope subscriptions/052c9332-2138-411f-adef-e7445d02ecc6/resourceGroups/rg-amit-001/providers/Microsoft.ContainerService/managedClusters/aks-test-001/ \
+#     --assignee "246cfd43-77c5-4c63-8f77-d6a19a3876ec"
