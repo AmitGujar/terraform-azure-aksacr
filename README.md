@@ -12,17 +12,10 @@ Optional Values:
 - resource_name - { resource group name }
 - location - { location for the resource group }
 
-### Provision Resources 
+### Create & Connect to the cluster
 
 ```
-./aksinit
-```
-
-### Connect to the cluster
-
-```
-cd scripts/
-./aks_connect.sh
+make
 ```
 
 ### Execute file to clean up resources
