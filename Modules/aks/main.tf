@@ -41,6 +41,10 @@ resource "azurerm_kubernetes_cluster" "aks_test" {
   local_account_disabled            = true
   role_based_access_control_enabled = true
 
+  key_vault_secrets_provider {
+    secret_rotation_enabled = true
+  }
+
   azure_active_directory_role_based_access_control {
     managed = true
     admin_group_object_ids = [
@@ -48,7 +52,7 @@ resource "azurerm_kubernetes_cluster" "aks_test" {
     ]
     azure_rbac_enabled = true
   }
-    lifecycle {
+  lifecycle {
     ignore_changes = all
   }
 }
@@ -65,9 +69,9 @@ resource "azurerm_kubernetes_cluster_node_pool" "kubernetes_cluster_node_pool" {
   kubernetes_cluster_id = azurerm_kubernetes_cluster.aks_test.id
   vm_size               = "Standard_D4s_v5"
   node_count            = "1"
-  enable_auto_scaling   = false
-  # min_count             = "2"
-  # max_count             = "3"
+  enable_auto_scaling   = true
+  min_count             = "1"
+  max_count             = "2"
   lifecycle {
     ignore_changes = all
   }
