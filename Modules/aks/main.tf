@@ -36,7 +36,7 @@ resource "azurerm_kubernetes_cluster" "aks_test" {
     client_secret = var.client_secret
   }
 
-  kubernetes_version = "1.28.3"
+  kubernetes_version = "1.29.2"
 
   # this configuration enables the Azure AD integration with AKS
   local_account_disabled            = true
