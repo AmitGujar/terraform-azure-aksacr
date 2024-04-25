@@ -49,13 +49,13 @@ module "aks_test" {
 }
 
 
-# module "virtual_machine" {
-#   source        = "./Modules/virtualMachine"
-#   resource_name = var.resource_name
-#   location      = var.location
-#   subnet_id     = data.azurerm_subnet.data_jumpbox_subnet.id
-#   public_ip_id  = data.azurerm_public_ip.data_jumpbox_public_ip.id
-#   depends_on = [
-#     module.virtual_network
-#   ]
-# }
+module "virtual_machine" {
+  source        = "./Modules/virtualMachine"
+  resource_name = var.resource_name
+  location      = var.location
+  subnet_id     = data.azurerm_subnet.data_jumpbox_subnet.id
+  public_ip_id  = data.azurerm_public_ip.data_jumpbox_public_ip.id
+  depends_on = [
+    module.virtual_network
+  ]
+}

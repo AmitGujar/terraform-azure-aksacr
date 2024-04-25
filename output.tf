@@ -9,14 +9,14 @@ output "virtual_network" {
 }
 
 #! turn on this lines if you are using virtual machine module
-# output "tls_private_key" {
-#   value     = module.virtual_machine.tls_private_key
-#   sensitive = true
-# }
+output "tls_private_key" {
+  value     = module.virtual_machine.tls_private_key
+  sensitive = true
+}
 
-# output "public_ip_address" {
-#   value = module.virtual_machine.public_ip_address
-# }
+output "public_ip_address" {
+  value = module.virtual_machine.public_ip_address
+}
 
 output "acr_name" {
   value       = module.acr_test.acr_test
