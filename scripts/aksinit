@@ -4,7 +4,7 @@ source $HOME/Desktop/terraform-azure-aksacr/scripts/progress_bar.sh || exit 1
 source $HOME/Desktop/terraform-azure-aksacr/scripts/alert.sh || exit 1
 
 # cd ..
-
+source $HOME/Desktop/terraform-azure-aksacr/scripts/killaks || exit 1
 validate_tfinstall() {
     if ! command -v terraform &>/dev/null; then
         echo "🤣 Using Terraform without installing terraform"
@@ -19,7 +19,7 @@ terraform_init() {
         terraform init --upgrade &>/dev/null
     }
 }
-terraform_init
+#terraform_init
 
 terraform_plan() {
     echo "Running Terraform Plan"
@@ -31,7 +31,7 @@ terraform_plan() {
 
     echo -e "\n✅ Terraform plan completed"
 }
-terraform_plan
+#terraform_plan
 
 terraform_apply() {
     echo "Running Terraform apply..."
@@ -45,4 +45,18 @@ terraform_apply() {
     echo "Execute the aks_connect.sh to connect"
 
 }
-terraform_apply
+#terraform_apply
+
+
+
+user_choice() {
+	read -p "Do you want to apply the config = " choice
+	if [ $choice == "y" ]; then
+		terraform_init
+		terraform_plan
+		terraform_apply
+	else
+		terraform destroy --auto-approve -var-file=personalenv.tfvars
+	fi
+}
+user_choice

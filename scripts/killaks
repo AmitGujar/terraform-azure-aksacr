@@ -1,10 +1,9 @@
 #!/bin/bash
 
-source ./progress_bar.sh
+source $HOME/Desktop/terraform-azure-aksacr/scripts/progress_bar.sh || exit 1
 
-source ./alert.sh
+source $HOME/Desktop/terraform-azure-aksacr/scripts/alert.sh || exit 1
 
-cd ..
 
 state_check() {
     if [ -f "terraform.tfstate" ]; then
@@ -16,14 +15,15 @@ state_check() {
 }
 
 destroy_aks() {
+
     echo "Checking if state file exists..."
     state_check
     echo "Starting terraform destroy...."
     {
-        terraform destroy --auto-approve -var-file=secret.tfvars > /dev/null
+        terraform destroy --auto-approve -var-file=personalenv.tfvars > /dev/null
     } &
     progress_bar_movement 5
     echo -e "\n✅ Terraform destroy complete."
     send_alert "AKS has been deleted ❌"
 }
-destroy_aks
+#destroy_aks
