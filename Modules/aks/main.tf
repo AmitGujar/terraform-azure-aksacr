@@ -14,6 +14,7 @@ resource "azurerm_kubernetes_cluster" "aks_test" {
     node_count      = var.agent_count
     vnet_subnet_id  = var.aks_subnet_id
     os_disk_size_gb = 50
+    only_critical_addons_enabled = true
   }
 
   linux_profile {
