@@ -1,5 +1,5 @@
-### Note - (for me 😂)
-Switch to dev branch if you want to deploy changes on dev workspace of terraform.
+### Note -
+This repo is no longer in development. I will be releasing a new module which will be a huge upgrade over this module. 
 
 ### Create secret.tfvars file which contains following details.
 Required Values: 
